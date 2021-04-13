@@ -8,7 +8,7 @@ from torch.optim.rmsprop import RMSprop
 from torch.utils.data import DataLoader
 from tqdm import trange, tqdm
 
-from stacked_hourglass import hg1, hg2, hg8
+from stacked_hourglass import hg1, hg2, hg7, hg8
 from stacked_hourglass.datasets.mpii import Mpii
 from stacked_hourglass.train import do_training_epoch, do_validation_epoch
 from stacked_hourglass.utils.logger import Logger
@@ -33,6 +33,8 @@ def main(args):
         model = hg1(pretrained=False)
     elif args.arch == 'hg2':
         model = hg2(pretrained=False)
+    elif args.arch == 'hg7':
+        model = hg7(pretrained=False)
     elif args.arch == 'hg8':
         model = hg8(pretrained=False)
     else:
@@ -122,7 +124,7 @@ if __name__ == '__main__':
 
     # Model structure
     parser.add_argument('--arch', '-a', metavar='ARCH', default='hg8',
-                        choices=['hg1', 'hg2', 'hg8'],
+                        choices=['hg1', 'hg2', 'hg7', 'hg8'],
                         help='model architecture')
     # Training strategy
     parser.add_argument('--input_shape', default=(256, 256), type=int, nargs='+',

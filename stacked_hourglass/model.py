@@ -8,9 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.hub import load_state_dict_from_url
 
-
 __all__ = ['HourglassNet', 'hg']
-
 
 model_urls = {
     'hg1': 'https://github.com/anibali/pytorch-stacked-hourglass/releases/download/v0.0.0/bearpaw_hg1-ce125879.pth',
@@ -213,4 +211,9 @@ def hg2(pretrained=False, progress=True, num_blocks=1, num_classes=16):
 
 def hg8(pretrained=False, progress=True, num_blocks=1, num_classes=16):
     return _hg('hg8', pretrained, progress, num_stacks=8, num_blocks=num_blocks,
+               num_classes=num_classes)
+
+
+def hg7(pretrained=False, progress=True, num_blocks=1, num_classes=16):
+    return _hg('hg7', pretrained, progress, num_stacks=7, num_blocks=num_blocks,
                num_classes=num_classes)
