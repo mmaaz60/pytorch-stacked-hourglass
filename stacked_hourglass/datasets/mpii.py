@@ -79,7 +79,7 @@ class Mpii(data.Dataset):
 
         # c = torch.Tensor(a['objpos']) - 1
         c = torch.Tensor(a['objpos'])
-        s = a['scale_provided']
+        s = torch.tensor(a['scale_provided'])
 
         # Adjust center/scale slightly to avoid cropping limbs
         if c[0] != -1:
