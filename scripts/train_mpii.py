@@ -1,5 +1,9 @@
 import argparse
 import os
+import sys
+
+print(os.getcwd())
+sys.path.append(f"../")
 
 import torch
 import torch.backends.cudnn
