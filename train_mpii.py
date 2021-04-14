@@ -13,9 +13,12 @@ from stacked_hourglass.datasets.mpii import Mpii
 from stacked_hourglass.train import do_training_epoch, do_validation_epoch
 from stacked_hourglass.utils.logger import Logger
 from stacked_hourglass.utils.misc import save_checkpoint, adjust_learning_rate
+from stacked_hourglass import model as m
 
 
 def main(args):
+    # Set the bottleneck expansion
+    m.expansion = args.bottleneck_expansion
     # Select the hardware device to use for inference.
     if torch.cuda.is_available():
         device = torch.device('cuda', torch.cuda.current_device())
@@ -164,5 +167,7 @@ if __name__ == '__main__':
                         help='save models for every #snapshot epochs (default: 0)')
     parser.add_argument('--resume', default='', type=str, metavar='PATH',
                         help='path to latest checkpoint (default: none)')
+    parser.add_argument('--bottleneck_expansion', default=2, type=int,
+                        help='expansion parameters of the bottleneck block.')
 
     main(parser.parse_args())

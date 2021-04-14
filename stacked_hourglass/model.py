@@ -16,9 +16,10 @@ model_urls = {
     'hg8': 'https://github.com/anibali/pytorch-stacked-hourglass/releases/download/v0.0.0/bearpaw_hg8-90e5d470.pth',
 }
 
+expansion = 2
+
 
 class Bottleneck(nn.Module):
-    expansion = 2
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(Bottleneck, self).__init__()
@@ -29,7 +30,7 @@ class Bottleneck(nn.Module):
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
                                padding=1, bias=True)
         self.bn3 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, planes * 2, kernel_size=1, bias=True)
+        self.conv3 = nn.Conv2d(planes, planes * expansion, kernel_size=1, bias=True)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
@@ -67,7 +68,7 @@ class Hourglass(nn.Module):
     def _make_residual(self, block, num_blocks, planes):
         layers = []
         for i in range(0, num_blocks):
-            layers.append(block(planes * block.expansion, planes))
+            layers.append(block(planes * expansion, planes))
         return nn.Sequential(*layers)
 
     def _make_hour_glass(self, block, num_blocks, planes, depth):
@@ -118,7 +119,7 @@ class HourglassNet(nn.Module):
         self.maxpool = nn.MaxPool2d(2, stride=2)
 
         # build hourglass modules
-        ch = self.num_feats * block.expansion
+        ch = self.num_feats * expansion
         hg, res, fc, score, fc_, score_ = [], [], [], [], [], []
         for i in range(num_stacks):
             hg.append(Hourglass(block, num_blocks, self.num_feats, 4))
@@ -137,15 +138,15 @@ class HourglassNet(nn.Module):
 
     def _make_residual(self, block, planes, blocks, stride=1):
         downsample = None
-        if stride != 1 or self.inplanes != planes * block.expansion:
+        if stride != 1 or self.inplanes != planes * expansion:
             downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes * block.expansion,
+                nn.Conv2d(self.inplanes, planes * expansion,
                           kernel_size=1, stride=stride, bias=True),
             )
 
         layers = []
         layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes * block.expansion
+        self.inplanes = planes * expansion
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes))
 
