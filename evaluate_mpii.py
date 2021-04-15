@@ -6,7 +6,7 @@ import torch.backends.cudnn
 from torch.nn import DataParallel
 from torch.utils.data import DataLoader
 
-from stacked_hourglass import hg1, hg2, hg8
+from stacked_hourglass import hg1, hg2, hg3, hg4, hg5, hg6, hg7, hg8
 from stacked_hourglass.datasets.mpii import Mpii, print_mpii_validation_accuracy
 from stacked_hourglass.train import do_validation_epoch
 
@@ -32,8 +32,18 @@ def main(args):
         model = hg1(pretrained=pretrained)
     elif args.arch == 'hg2':
         model = hg2(pretrained=pretrained)
+    elif args.arch == 'hg3':
+        model = hg3(pretrained=False)
+    elif args.arch == 'hg4':
+        model = hg4(pretrained=False)
+    elif args.arch == 'hg5':
+        model = hg5(pretrained=False)
+    elif args.arch == 'hg6':
+        model = hg6(pretrained=False)
+    elif args.arch == 'hg7':
+        model = hg7(pretrained=False)
     elif args.arch == 'hg8':
-        model = hg8(pretrained=pretrained)
+        model = hg8(pretrained=False)
     else:
         raise Exception('unrecognised model architecture: ' + args.model)
     model = model.to(device)
@@ -65,7 +75,7 @@ if __name__ == '__main__':
     parser.add_argument('--image-path', required=True, type=str,
                         help='path to MPII Human Pose images')
     parser.add_argument('--arch', metavar='ARCH', default='hg1',
-                        choices=['hg1', 'hg2', 'hg8'],
+                        choices=['hg1', 'hg2', 'hg3', 'hg4', 'hg5', 'hg6', 'hg7', 'hg8'],
                         help='model architecture')
     parser.add_argument('--model-file', default='', type=str, metavar='PATH',
                         help='path to saved model weights')
