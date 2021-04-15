@@ -9,9 +9,13 @@ from torch.utils.data import DataLoader
 from stacked_hourglass import hg1, hg2, hg3, hg4, hg5, hg6, hg7, hg8
 from stacked_hourglass.datasets.mpii import Mpii, print_mpii_validation_accuracy
 from stacked_hourglass.train import do_validation_epoch
+from stacked_hourglass import model as m
 
 
 def main(args):
+    print(f"\nModel: {args.arch}, Bottleneck Expansion: {args.bottleneck_expansion}")
+    # Set the bottleneck expansion
+    m.expansion = args.bottleneck_expansion
     # Select the hardware device to use for inference.
     if torch.cuda.is_available():
         device = torch.device('cuda', torch.cuda.current_device())
@@ -85,5 +89,7 @@ if __name__ == '__main__':
                         help='batch size')
     parser.add_argument('--flip', dest='flip', action='store_true',
                         help='flip the input during validation')
+    parser.add_argument('--bottleneck_expansion', default=2, type=int,
+                        help='expansion parameters of the bottleneck block.')
 
     main(parser.parse_args())

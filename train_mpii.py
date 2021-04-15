@@ -17,6 +17,7 @@ from stacked_hourglass import model as m
 
 
 def main(args):
+    print(f"\nModel: {args.arch}, Bottleneck Expansion: {args.bottleneck_expansion}")
     # Set the bottleneck expansion
     m.expansion = args.bottleneck_expansion
     # Select the hardware device to use for inference.
