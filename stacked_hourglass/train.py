@@ -133,7 +133,8 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
     predictions = torch.stack(predictions, dim=0)
     model_parameters = sum(p.numel() for p in model.parameters())
     print(f"\nModel Parameters: {model_parameters / 1e6} M")
-    print(f"Average Model Inference Time: {sum(inference_time) / len(inference_time)} ms")
-    print(f"Average FPS: {1000 / (sum(inference_time) / len(inference_time))}")
+    if inference_time:
+        print(f"Average Model Inference Time: {sum(inference_time) / len(inference_time)} ms")
+        print(f"Average FPS: {1000 / (sum(inference_time) / len(inference_time))}")
 
     return losses.avg, accuracies.avg, predictions

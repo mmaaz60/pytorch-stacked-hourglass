@@ -7,6 +7,7 @@ from torch.nn import DataParallel
 from torch.optim.rmsprop import RMSprop
 from torch.utils.data import DataLoader
 from tqdm import trange, tqdm
+import time
 
 from stacked_hourglass import hg1, hg2, hg3, hg4, hg5, hg6, hg7, hg8
 from stacked_hourglass.datasets.mpii import Mpii
@@ -92,7 +93,11 @@ def main(args):
 
     # train and eval
     lr = args.lr
+    epoch_times = []
+    end = time.time()
+    f = open(f"{args.checkpoint}/epoch_times.txt", 'w')
     for epoch in trange(args.start_epoch, args.epochs, desc='Overall', ascii=True):
+        start = end
         lr = adjust_learning_rate(optimizer, epoch, lr, args.schedule, args.gamma)
 
         # train for one epoch
@@ -124,7 +129,10 @@ def main(args):
             'best_acc': best_acc,
             'optimizer' : optimizer.state_dict(),
         }, predictions, is_best, checkpoint=args.checkpoint, snapshot=args.snapshot)
-
+        end = time.time()
+        epoch_times.append(end - start)
+        print(f"Average Epoch Time After Epoch {epoch}: {sum(epoch_times) / len(epoch_times)} sec", file=f)
+    f.close()
     logger.close()
 
 
