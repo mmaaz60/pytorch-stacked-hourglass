@@ -81,7 +81,7 @@ if __name__ == '__main__':
                         help='path to saved model weights')
     parser.add_argument('--workers', default=4, type=int, metavar='N',
                         help='number of data loading workers')
-    parser.add_argument('--batch-size', default=6, type=int, metavar='N',
+    parser.add_argument('--batch-size', default=1, type=int, metavar='N',
                         help='batch size')
     parser.add_argument('--flip', dest='flip', action='store_true',
                         help='flip the input during validation')

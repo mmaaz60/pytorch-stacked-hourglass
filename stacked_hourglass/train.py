@@ -2,6 +2,7 @@ import torch
 import torch.backends.cudnn
 import torch.nn.parallel
 from tqdm import tqdm
+import time
 
 from stacked_hourglass.loss import joints_mse_loss
 from stacked_hourglass.utils.evaluation import accuracy, AverageMeter, final_preds
@@ -65,7 +66,9 @@ def do_validation_step(model, input, target, data_info, target_weight=None, flip
     assert len(input) == len(target), 'input and target must contain the same number of examples.'
 
     # Forward pass and loss calculation.
+    start = time.time()
     output = model(input)
+    inference_time = (time.time() - start) * 1000
     loss = sum(joints_mse_loss(o, target, target_weight) for o in output)
 
     # Get the heatmaps.
@@ -80,8 +83,7 @@ def do_validation_step(model, input, target, data_info, target_weight=None, flip
     else:
         heatmaps = output[-1].cpu()
 
-
-    return heatmaps, loss.item()
+    return heatmaps, loss.item(), inference_time
 
 
 def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=False, acc_joints=None):
@@ -98,13 +100,16 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
         progress = tqdm(iterable, desc='Valid', total=len(val_loader), ascii=True, leave=False)
         iterable = progress
 
+    inference_time = []
     for i, (input, target, meta) in iterable:
         # Copy data to the training device (eg GPU).
         input = input.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
         target_weight = meta['target_weight'].to(device, non_blocking=True)
 
-        heatmaps, loss = do_validation_step(model, input, target, data_info, target_weight, flip)
+        heatmaps, loss, infer_time = do_validation_step(model, input, target, data_info, target_weight, flip)
+        if not i == 0:
+            inference_time.append(infer_time)
 
         # Calculate PCK from the predicted heatmaps.
         acc = accuracy(heatmaps, target.cpu(), acc_joints)
@@ -126,5 +131,7 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
             ))
 
     predictions = torch.stack(predictions, dim=0)
+    print(f"\nAverage Model Inference Time: {sum(inference_time) / len(inference_time)} ms")
+    print(f"Average FPS: {1000 / (sum(inference_time) / len(inference_time))}")
 
     return losses.avg, accuracies.avg, predictions
