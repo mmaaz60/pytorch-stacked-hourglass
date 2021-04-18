@@ -55,7 +55,7 @@ class Mpii(data.Dataset):
 
         # create train/val split
 
-        with open('data/dumpy_data.json', 'r') as f:
+        with gzip.open(open_binary(stacked_hourglass.res, 'mpii_annotations.json.gz')) as f:
             self.anno = json.load(f)
 
         self.train_list, self.valid_list = [], []
@@ -146,9 +146,6 @@ def evaluate_mpii_validation_accuracy(preds):
     jnt_missing = dict['jnt_missing']
     pos_gt_src = dict['pos_gt_src']
     headboxes_src = dict['headboxes_src']
-    jnt_missing = jnt_missing[:, 0:2]
-    pos_gt_src = pos_gt_src[:, :, 0:2]
-    headboxes_src = headboxes_src[:, :, 0:2]
 
     preds = np.array(preds)
     assert preds.shape == (pos_gt_src.shape[2], pos_gt_src.shape[0], pos_gt_src.shape[1])
