@@ -67,7 +67,8 @@ def main(args):
                             num_workers=args.workers, pin_memory=True)
 
     # Generate predictions for the validation set.
-    _, _, predictions = do_validation_epoch(val_loader, model, device, Mpii.DATA_INFO, args.flip)
+    _, _, predictions = do_validation_epoch(val_loader, model, device, Mpii.DATA_INFO, args.flip,
+                                            plot_predictions=args.visualize, folder_path=args.visualization_path)
 
     # Report PCKh for the predictions.
     print('\nFinal validation PCKh scores:\n')
@@ -91,5 +92,9 @@ if __name__ == '__main__':
                         help='flip the input during validation')
     parser.add_argument('--bottleneck_expansion', default=2, type=int,
                         help='expansion parameters of the bottleneck block.')
+    parser.add_argument('--visualize', default=False, type=bool,
+                        help='Either to visualize the predictions or not.')
+    parser.add_argument('--visualization_path', default=None, type=str,
+                        help='Directory path to save the plotted predictions.')
 
     main(parser.parse_args())

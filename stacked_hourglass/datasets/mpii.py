@@ -40,8 +40,8 @@ class Mpii(data.Dataset):
 
     def __init__(self, image_path, is_train=True, inp_res=256, sigma=1, scale_factor=0.25,
                  rot_factor=30, label_type='Gaussian'):
-        self.img_folder = image_path # root image folders
-        self.is_train = is_train # training set or test set
+        self.img_folder = image_path  # root image folders
+        self.is_train = is_train  # training set or test set
         if not isinstance(inp_res, (list, tuple)):  # Input res stored as (H, W)
             self.inp_res = [inp_res, inp_res]
         else:
@@ -55,7 +55,7 @@ class Mpii(data.Dataset):
 
         # create train/val split
 
-        with gzip.open(open_binary(stacked_hourglass.res, 'mpii_annotations.json.gz')) as f:
+        with open('data/dumpy_data.json', 'r') as f:
             self.anno = json.load(f)
 
         self.train_list, self.valid_list = [], []
@@ -92,8 +92,8 @@ class Mpii(data.Dataset):
 
         r = 0
         if self.is_train:
-            s = s*torch.randn(1).mul_(sf).add_(1).clamp(1-sf, 1+sf)[0]
-            r = torch.randn(1).mul_(rf).clamp(-2*rf, 2*rf)[0] if random.random() <= 0.6 else 0
+            s = s * torch.randn(1).mul_(sf).add_(1).clamp(1 - sf, 1 + sf)[0]
+            r = torch.randn(1).mul_(rf).clamp(-2 * rf, 2 * rf)[0] if random.random() <= 0.6 else 0
 
             # Flip
             if random.random() <= 0.5:
@@ -118,16 +118,16 @@ class Mpii(data.Dataset):
         for i in range(nparts):
             # if tpts[i, 2] > 0: # This is evil!!
             if tpts[i, 1] > 0:
-                tpts[i, 0:2] = to_torch(transform(tpts[i, 0:2]+1, c, s, self.out_res, rot=r))
-                target[i], vis = draw_labelmap(target[i], tpts[i]-1, self.sigma, type=self.label_type)
+                tpts[i, 0:2] = to_torch(transform(tpts[i, 0:2] + 1, c, s, self.out_res, rot=r))
+                target[i], vis = draw_labelmap(target[i], tpts[i] - 1, self.sigma, type=self.label_type)
                 target_weight[i, 0] *= vis
 
         # Meta info
         if not isinstance(s, torch.Tensor):
             s = torch.Tensor(s)
 
-        meta = {'index' : index, 'center' : c, 'scale' : s,
-        'pts' : pts, 'tpts' : tpts, 'target_weight': target_weight}
+        meta = {'index': index, 'center': c, 'scale': s,
+                'pts': pts, 'tpts': tpts, 'target_weight': target_weight, 'image_path': img_path}
 
         return inp, target, meta
 
@@ -146,6 +146,9 @@ def evaluate_mpii_validation_accuracy(preds):
     jnt_missing = dict['jnt_missing']
     pos_gt_src = dict['pos_gt_src']
     headboxes_src = dict['headboxes_src']
+    jnt_missing = jnt_missing[:, 0:2]
+    pos_gt_src = pos_gt_src[:, :, 0:2]
+    headboxes_src = headboxes_src[:, :, 0:2]
 
     preds = np.array(preds)
     assert preds.shape == (pos_gt_src.shape[2], pos_gt_src.shape[0], pos_gt_src.shape[1])
@@ -192,6 +195,6 @@ def print_mpii_validation_accuracy(preds):
     print(tabulate([
         ['Head', 'Shoulder', 'Elbow', 'Wrist', 'Hip', 'Knee', 'Ankle', 'Mean'],
         [PCKh[head], 0.5 * (PCKh[lsho] + PCKh[rsho]), 0.5 * (PCKh[lelb] + PCKh[relb]),
-        0.5 * (PCKh[lwri] + PCKh[rwri]), 0.5 * (PCKh[lhip] + PCKh[rhip]),
-        0.5 * (PCKh[lkne] + PCKh[rkne]), 0.5 * (PCKh[lank] + PCKh[rank]), np.mean(PCKh)]
+         0.5 * (PCKh[lwri] + PCKh[rwri]), 0.5 * (PCKh[lhip] + PCKh[rhip]),
+         0.5 * (PCKh[lkne] + PCKh[rkne]), 0.5 * (PCKh[lank] + PCKh[rank]), np.mean(PCKh)]
     ], headers='firstrow', floatfmt='0.2f'))

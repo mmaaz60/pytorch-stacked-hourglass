@@ -3,6 +3,7 @@ import torch.backends.cudnn
 import torch.nn.parallel
 from tqdm import tqdm
 import time
+from stacked_hourglass.utils.visualization import draw_keypoints_on_image, draw_skeleton_on_image
 
 from stacked_hourglass.loss import joints_mse_loss
 from stacked_hourglass.utils.evaluation import accuracy, AverageMeter, final_preds
@@ -86,7 +87,8 @@ def do_validation_step(model, input, target, data_info, target_weight=None, flip
     return heatmaps, loss.item(), inference_time
 
 
-def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=False, acc_joints=None):
+def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=False, acc_joints=None,
+                        plot_predictions=False, folder_path=None):
     losses = AverageMeter()
     accuracies = AverageMeter()
     predictions = [None] * len(val_loader.dataset)
@@ -116,6 +118,9 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
 
         # Calculate locations in original image space from the predicted heatmaps.
         preds = final_preds(heatmaps, meta['center'], meta['scale'], [64, 64])
+        if plot_predictions:
+            draw_keypoints_on_image(folder_path, meta["image_path"][0], preds)
+            draw_skeleton_on_image(folder_path, meta["image_path"][0], preds)
         for example_index, pose in zip(meta['index'], preds):
             predictions[example_index] = pose
 
