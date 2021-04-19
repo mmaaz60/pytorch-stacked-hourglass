@@ -26,16 +26,20 @@ def draw_skeleton_on_image(folder_path, image_path, keypoints):
     keypoints = keypoints.detach()
     keypoints = np.array(keypoints).reshape(16, -1)
     image = cv2.imread(image_path)
+    h, w, _ = image.shape
     joints = []
     for i, joint in enumerate(keypoints):
         joint_x = int(joint[0])
         joint_y = int(joint[1])
-        joints.append((joint_x, joint_y))
+        if joint_x < w and joint_y < h:
+            joints.append((joint_x, joint_y))
     # draw skeleton
     for i, bone in enumerate(MPII_BONES):
         joint_1 = joints[bone[0]]
         joint_2 = joints[bone[1]]
         cv2.line(image, joint_1, joint_2, thickness=5, color=(0 + (i+5)*10, 0 + (i+2)*5, 255 - (i+3)*10))
+    for joint in joints:
+        cv2.circle(image, (joint[0], joint[1]), radius=0, color=(0, 255, 0), thickness=5)
     cv2.imwrite(f"{folder_path}/skeleton_{image_path.split('/')[-1]}", image)
 
 
