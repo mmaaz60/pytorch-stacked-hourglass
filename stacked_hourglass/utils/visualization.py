@@ -31,8 +31,7 @@ def draw_skeleton_on_image(folder_path, image_path, keypoints):
     for i, joint in enumerate(keypoints):
         joint_x = int(joint[0])
         joint_y = int(joint[1])
-        if joint_x < w and joint_y < h:
-            joints.append((joint_x, joint_y))
+        joints.append((joint_x, joint_y))
     # draw skeleton
     for i, bone in enumerate(MPII_BONES):
         joint_1 = joints[bone[0]]
