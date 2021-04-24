@@ -4,6 +4,10 @@ paper and provides an easy-to-follow mechanism for performing network pruning.
 
 ![Stacked Hourglass Network Architecture](images/arch.png)
 
+# Note
+The code is tested on Ubuntu 18.04 LTS powered machine having a single Quadro RTX 6000 GPU with Python 3.8.8, PyTorch 1.8.1 and Torchvision 0.9.1. 
+The code has not been tested on CPU.
+
 ## Environment Setup
 Follow the following steps to prepare the environment for training and evaluation.
 
@@ -65,7 +69,7 @@ Adjust the number of workers as per the number of available CPU cores.
 $ python train_mpii.py \
     --arch=hg7 \
     --image-path=./data/images \
-    --checkpoint=checkpoints/hg8 \
+    --checkpoint=./checkpoints/hg7 \
     --epochs=50 \
     --train-batch=24 \
     --test-batch=24 \
@@ -81,10 +85,10 @@ The script `evaluate_mpii.py` is used for evaluation on validation dataset. A sa
 Adjust the number of workers as per the number of available CPU cores.
 
 ```bash
-$ python train_mpii.py \
+$ python evaluate_mpii.py \
     --arch=hg7 \
     --image-path=./data/images \
-    --model-file=checkpoints/hg8/model_best.pth.tar \
+    --model-file=./checkpoints/hg7/model_best.pth.tar \
     --batch-size=1 \
     --workers=16 \
     --visualize True \
