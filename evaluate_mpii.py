@@ -9,10 +9,14 @@ from torch.utils.data import DataLoader
 from stacked_hourglass import hg1, hg2, hg3, hg4, hg5, hg6, hg7, hg8
 from stacked_hourglass.datasets.mpii import Mpii, print_mpii_validation_accuracy
 from stacked_hourglass.train import do_validation_epoch
+from stacked_hourglass import model as m
 
 
 def main(args):
     print(f"\nModel: {args.arch}")
+    # Set the N & M
+    m.N = args.N
+    m.M = args.M
     # Select the hardware device to use for inference.
     if torch.cuda.is_available():
         device = torch.device('cuda', torch.cuda.current_device())
@@ -91,5 +95,9 @@ if __name__ == '__main__':
                         help='Either to visualize the predictions or not.')
     parser.add_argument('--visualization_path', default=None, type=str,
                         help='Directory path to save the plotted predictions.')
+    parser.add_argument('--N', default=128, type=int,
+                        help='No. of channels in earlier layers of Residual Block')
+    parser.add_argument('--M', default=128, type=int,
+                        help='No. of channels in the final layer of Residual Block')
 
     main(parser.parse_args())
