@@ -11,6 +11,7 @@ The code has not been tested on CPU.
 ## Environment Setup
 Follow the following steps to prepare the environment for training and evaluation.
 
+1. Clone the repository `git clone https://github.com/mmaaz60/pytorch-stacked-hourglass`.
 1. Download the dataset from the [link](http://human-pose.mpi-inf.mpg.de/#download) and extract the images in a directory (let's say "./data/images").
 1. Conda environment is recommended. Please follow the following steps to create environment and install the dependencies.
     1. Create new conda environment `conda create --name=hg python=3.8`.
