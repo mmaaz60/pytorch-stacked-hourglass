@@ -70,7 +70,7 @@ $ python train_mpii.py \
     --train-batch=24 \
     --test-batch=24 \
     --lr=1e-3 \
-    --schedule 20 35 45
+    --schedule 20 35 45 \
     --workers=16 \
     --N=128 \
     --M=256
@@ -87,8 +87,8 @@ $ python train_mpii.py \
     --model-file=checkpoints/hg8/model_best.pth.tar \
     --batch-size=1 \
     --workers=16 \
-    --visualize True
-    --visualization_path=./hg7_qualitative_results
+    --visualize True \
+    --visualization_path=./hg7_qualitative_results \
     --N=128 \
     --M=256
 ````
