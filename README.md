@@ -17,10 +17,10 @@ Follow the following steps to prepare the environment for training and evaluatio
 The repository contains scripts `train_mpii.py` and `evaluate_mpii.py` for training and evaluate hourglass network 
 on MPII dataset.
 
-# Command Line Parameters
+## Command Line Parameters
 The below table lists the command line parameters available for `train_mpii.py` and `evaluate_mpii.py` scripts.
 
-# `train_mpii.py`
+### `train_mpii.py`
 
 | Parameter | Description  | Possible Values |
 | ------------- | ------------- | ------------- |
@@ -43,7 +43,7 @@ The below table lists the command line parameters available for `train_mpii.py` 
 | --N | No. of channels in earlier layers of Residual Block. | int: any integer value, e.g. 64, 128, etc. |
 | --M | No. of channels in the final layer of Residual Block. | int: any integer value, e.g. 128, 256, etc. |
 
-# `evaluate_mpii.py`
+### `evaluate_mpii.py`
 
 | Parameter | Description  | Possible Values |
 | ------------- | ------------- | ------------- |
@@ -57,7 +57,7 @@ The below table lists the command line parameters available for `train_mpii.py` 
 | --N | No. of channels in earlier layers of Residual Block. | int: any integer value, e.g. 64, 128, etc. |
 | --M | No. of channels in the final layer of Residual Block. | int: any integer value, e.g. 128, 256, etc. |
 
-# Training
+## Training
 The script `train_mpii.py` is used for training. A sample training command to run training for `hg7` is given below. 
 Adjust the number of workers as per the number of available CPU cores.
 
@@ -76,7 +76,7 @@ $ python train_mpii.py \
     --M=256
 ```
 
-# Evaluation
+## Evaluation
 The script `evaluate_mpii.py` is used for evaluation on validation dataset. A sample command to evaluate trained `hg7` mdoel is given below. 
 Adjust the number of workers as per the number of available CPU cores.
 
